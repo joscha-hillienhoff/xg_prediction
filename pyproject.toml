@@ -1,0 +1,40 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "xg_prediction"
+version = "0.0.1"
+description = "This project develops an expected goals (xG) model to estimate the probability that a shot results in a goal, using open StatsBomb data from the 2015/16 Bundesliga season. A supervised machine learning classifier is trained on engineered shot-level features such as shot location, angle, body part, and game context. Model performance is evaluated using appropriate classification metrics, with the goal of understanding the key factors that influence scoring in professional football and achieving strong predictive accuracy."
+authors = [
+  { name = "Joscha Hillienhoff" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+dependencies = [
+    "loguru",
+    "pip",
+    "python-dotenv",
+    "ruff",
+    "tqdm",
+    "typer",
+]
+requires-python = "~=3.10.0"
+
+
+[tool.ruff]
+line-length = 99
+src = ["xg_prediction"]
+include = ["pyproject.toml", "xg_prediction/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["xg_prediction"]
+force-sort-within-sections = true
+
