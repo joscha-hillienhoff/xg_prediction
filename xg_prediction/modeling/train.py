@@ -36,12 +36,15 @@ BOOL_COLS = [
 ]
 
 DROP_COLS = [
+    "id"
     "index",
     "timestamp",
     "location",
     "related_events",
     "shot_key_pass_id",
     "shot_freeze_frame",
+    "player", 
+    "position"
 ]
 
 
@@ -59,6 +62,7 @@ def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
 
     categorical_cols = df.select_dtypes(include=["object", "category"]).columns
     df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+
     return df
 
 
