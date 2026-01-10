@@ -3,9 +3,8 @@ from pathlib import Path
 import dagshub
 from loguru import logger
 import mlflow
-from mlflow.tracking import MlflowClient
+import numpy as np
 import pandas as pd
-from tqdm import tqdm
 import typer
 
 from xg_prediction.config import PROCESSED_DATA_DIR
@@ -14,19 +13,20 @@ from xg_prediction.modeling import train
 app = typer.Typer()
 
 # Initialize dagshub to ensure the script can reach the remote server
-dagshub.init(repo_owner='joscha0610', repo_name='xg_prediction', mlflow=True)
+dagshub.init(repo_owner="joscha0610", repo_name="xg_prediction", mlflow=True)
 
-def load_model(run_id: str):
-    """Load the logged XGBoost model from an MLflow run."""
-    mlflow.set_tracking_uri("https://dagshub.com/joscha0610/xg_prediction.mlflow")
-    mlflow.set_registry_uri("https://dagshub.com/joscha0610/xg_prediction.mlflow")
-    model_uri = f"runs:/{run_id}/model"
-    return mlflow.xgboost.load_model(model_uri)
+
+def load_model(model_name: str, model_version: str):
+    # model_uri = f"runs:/{run_id}/model"
+    model_uri = "models:/{model_name}/{model_version}"
+    return mlflow.pyfunc.load_model(model_uri)
 
 
 def predict_proba(model, X: pd.DataFrame) -> pd.Series:
-    """Return predicted goal probabilities."""
-    return pd.Series(model.predict_proba(X)[:, 1], index=X.index, name="is_goal")
+    # binary:logistic -> returns probability as 1D array
+    proba = model.predict_proba(X)[:, 1]  # probability of class 1
+    proba = np.asarray(proba, dtype=float)
+    return pd.Series(proba, index=X.index, name="is_goal")
 
 
 def create_submission(path: Path, ids: pd.Series, predictions: pd.Series) -> None:
@@ -59,7 +59,7 @@ def main(
     X_test = train.preprocessing_pipeline(X_test_raw)
 
     # Load model by run_id
-    model = load_model("7257190dfa8a445e90176dafcd01b166")
+    model = load_model("xg_boost", "2")
 
     # Predict
     preds = predict_proba(model, X_test)
