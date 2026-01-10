@@ -502,22 +502,28 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 @app.command()
 def main(
     # ---- Input and Output Path ----
-    input_path: Path = RAW_DATA_DIR / "train.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "train_feat.csv",
+    input_train: Path = RAW_DATA_DIR / "train.csv",
+    input_test: Path = RAW_DATA_DIR / "test.csv",
+    output_train: Path = PROCESSED_DATA_DIR / "train_feat.csv",
+    output_test: Path = PROCESSED_DATA_DIR / "test_feat.csv"
     # -----------------------------------------
 ):
-    logger.info(f"Loading dataset: {input_path}")
-    df = pd.read_csv(input_path)
+    logger.info(f"Loading dataset: {input_train} and {input_test}")
+    df_train = pd.read_csv(input_train)
+    df_test = pd.read_csv(input_test)
 
     logger.info("Generating features...")
-    df_feat = build_features(df)
+    df_train_feat = build_features(df_train)
+    df_test_feat = build_features(df_test)
 
-    logger.info(f"Writing features: {output_path}")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    df_feat.to_csv(output_path, index=False)
+    logger.info(f"Writing features: {output_train} and {output_test}")
+    output_train.parent.mkdir(parents=True, exist_ok=True)
+    output_test.parent.mkdir(parents=True, exist_ok=True)
+    
+    df_train_feat.to_csv(output_train, index=False)
+    df_test_feat.to_csv(output_test, index=False)
 
     logger.success("Feature generation complete.")
-
     # -----------------------------------------
 
 
