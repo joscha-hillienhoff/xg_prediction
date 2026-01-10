@@ -469,6 +469,90 @@ def add_defenders_in_radius_feature(df):
 
     return out
 
+ATTACK = {
+    "Center Forward",
+    "Left Center Forward",
+    "Right Center Forward",
+    "Left Wing",
+    "Right Wing",
+    "Center Attacking Midfield",
+    "Left Attacking Midfield",
+    "Right Attacking Midfield",
+}
+
+MIDFIELD = {
+    "Center Defensive Midfield",
+    "Left Defensive Midfield",
+    "Right Defensive Midfield",
+    "Left Midfield",
+    "Right Midfield",
+    "Left Center Midfield",
+    "Right Center Midfield",
+}
+
+DEFENSE = {
+    "Center Back",
+    "Left Center Back",
+    "Right Center Back",
+    "Left Back",
+    "Right Back",
+    "Left Wing Back",
+    "Right Wing Back",
+}
+
+GOALKEEPER = {"Goalkeeper"}
+LEFT = {p for p in [
+    "Left Wing", "Left Back", "Left Center Back", "Left Midfield",
+    "Left Defensive Midfield", "Left Center Midfield",
+    "Left Center Forward", "Left Wing Back", "Left Attacking Midfield"
+]}
+
+RIGHT = {p for p in [
+    "Right Wing", "Right Back", "Right Center Back",
+    "Right Defensive Midfield", "Right Center Midfield",
+    "Right Center Forward", "Right Midfield",
+    "Right Wing Back", "Right Attacking Midfield"
+]}
+
+def add_position_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    # --- ROLE ---
+    def role(pos):
+        if pos in ATTACK:
+            return "attack"
+        if pos in MIDFIELD:
+            return "midfield"
+        if pos in DEFENSE:
+            return "defense"
+        if pos in GOALKEEPER:
+            return "goalkeeper"
+        return "other"
+
+    df["position_role"] = df["position"].apply(role)
+
+    # --- SIDE ---
+    def side(pos):
+        if pos in LEFT:
+            return "left"
+        if pos in RIGHT:
+            return "right"
+        return "central"
+
+    df["position_side"] = df["position"].apply(side)
+
+    # --- BINARY FLAGS ---
+    df["is_attacker"] = df["position_role"] == "attack"
+    df["is_midfielder"] = df["position_role"] == "midfield"
+    df["is_defender"] = df["position_role"] == "defense"
+    df["is_goalkeeper"] = df["position_role"] == "goalkeeper"
+
+    df["is_wide_position"] = df["position"].str.contains("Wing")
+    df["is_central_position"] = df["position_side"] == "central"
+    df["is_defensive_position"] = df["position_role"].isin(["defense", "midfield"])
+
+    return df
+
 
 #  Ordered list of feature engineering steps.
 FEATURE_STEPS = [
@@ -478,6 +562,7 @@ FEATURE_STEPS = [
     add_goalkeeper_distance_feature,
     add_goalkeeper_off_center_feature,
     add_defenders_in_radius_feature,
+    add_position_features
 ]
 
 
