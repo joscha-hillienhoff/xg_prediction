@@ -1,0 +1,9 @@
+name: xgboost
+params:
+  n_estimators: 100
+  max_depth: 4
+  learning_rate: 0.1
+  eval_metric: logloss
+  use_label_encoder: False
+  objective: binary:logistic
+  tree_method: auto # Use 'gpu_hist' if you have a GPU
