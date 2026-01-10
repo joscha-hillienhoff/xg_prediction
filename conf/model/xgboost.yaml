@@ -1,0 +1,13 @@
+name: xgboost
+params:
+  objective: "binary:logistic"
+  eval_metric: "auc"
+  tree_method: "hist"
+  n_jobs: -1
+  random_state: ${seed}
+
+  # baseline values (Optuna will override some)
+  n_estimators: 300
+  max_depth: 4
+  learning_rate: 0.1
+  early_stopping_rounds: 50
