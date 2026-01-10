@@ -5,23 +5,32 @@ defaults:
   - override hydra/sweeper/sampler: tpe
 
 experiment_name: "xG_Optuna_Optimization"
+seed: 42
 
 data:
-  features_path: "data/processed/features.csv"
-  labels_path: "data/processed/labels.csv"
+  features_train_path: "data/processed/train_feat.csv"
+  features_test_path: "data/processed/test_feat.csv"
+  target_column: "is_goal"
 
-# Optuna Configuration
+cv:
+  n_splits: 5
+
 hydra:
   sweeper:
     sampler:
       seed: 123
-    direction: maximize  # We want to MAXIMIZE AUC
+    direction: maximize
     study_name: xgboost_optimization
-    n_trials: 10         # Start with 10 trials to test
-    n_jobs: 1            # Keep 1 to avoid conflicts
-    
-    # The Search Space
+    n_trials: 30
+    n_jobs: 1
+
     params:
       model.params.learning_rate: interval(0.01, 0.3)
-      model.params.max_depth: choice(3, 4, 5, 6, 8)
-      model.params.n_estimators: choice(100, 200, 300, 500)
+      model.params.max_depth: choice(2, 3, 4, 5, 6, 8)
+      model.params.n_estimators: choice(300, 500, 800, 1200)
+
+      model.params.subsample: interval(0.6, 1.0)
+      model.params.colsample_bytree: interval(0.6, 1.0)
+      model.params.min_child_weight: interval(1.0, 20.0)
+      model.params.reg_lambda: interval(0.001, 10.0)
+      model.params.reg_alpha: interval(0.000001, 1.0)
