@@ -193,3 +193,4 @@ cython_debug/
 # MlFlow
 mlflow.db
 multirun/*
+outputs/*
