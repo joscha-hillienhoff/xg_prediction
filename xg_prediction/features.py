@@ -469,6 +469,7 @@ def add_defenders_in_radius_feature(df):
 
     return out
 
+
 ATTACK = {
     "Center Forward",
     "Left Center Forward",
@@ -501,18 +502,36 @@ DEFENSE = {
 }
 
 GOALKEEPER = {"Goalkeeper"}
-LEFT = {p for p in [
-    "Left Wing", "Left Back", "Left Center Back", "Left Midfield",
-    "Left Defensive Midfield", "Left Center Midfield",
-    "Left Center Forward", "Left Wing Back", "Left Attacking Midfield"
-]}
+LEFT = {
+    p
+    for p in [
+        "Left Wing",
+        "Left Back",
+        "Left Center Back",
+        "Left Midfield",
+        "Left Defensive Midfield",
+        "Left Center Midfield",
+        "Left Center Forward",
+        "Left Wing Back",
+        "Left Attacking Midfield",
+    ]
+}
 
-RIGHT = {p for p in [
-    "Right Wing", "Right Back", "Right Center Back",
-    "Right Defensive Midfield", "Right Center Midfield",
-    "Right Center Forward", "Right Midfield",
-    "Right Wing Back", "Right Attacking Midfield"
-]}
+RIGHT = {
+    p
+    for p in [
+        "Right Wing",
+        "Right Back",
+        "Right Center Back",
+        "Right Defensive Midfield",
+        "Right Center Midfield",
+        "Right Center Forward",
+        "Right Midfield",
+        "Right Wing Back",
+        "Right Attacking Midfield",
+    ]
+}
+
 
 def add_position_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
@@ -562,7 +581,7 @@ FEATURE_STEPS = [
     add_goalkeeper_distance_feature,
     add_goalkeeper_off_center_feature,
     add_defenders_in_radius_feature,
-    add_position_features
+    add_position_features,
 ]
 
 
@@ -590,7 +609,7 @@ def main(
     input_train: Path = RAW_DATA_DIR / "train.csv",
     input_test: Path = RAW_DATA_DIR / "test.csv",
     output_train: Path = PROCESSED_DATA_DIR / "train_feat.csv",
-    output_test: Path = PROCESSED_DATA_DIR / "test_feat.csv"
+    output_test: Path = PROCESSED_DATA_DIR / "test_feat.csv",
     # -----------------------------------------
 ):
     logger.info(f"Loading dataset: {input_train} and {input_test}")
@@ -604,7 +623,7 @@ def main(
     logger.info(f"Writing features: {output_train} and {output_test}")
     output_train.parent.mkdir(parents=True, exist_ok=True)
     output_test.parent.mkdir(parents=True, exist_ok=True)
-    
+
     df_train_feat.to_csv(output_train, index=False)
     df_test_feat.to_csv(output_test, index=False)
 
