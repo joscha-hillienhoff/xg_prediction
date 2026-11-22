@@ -11,6 +11,13 @@ data:
   features_train_path: "data/processed/train_feat.csv"
   features_test_path: "data/processed/test_feat.csv"
   target_column: "is_goal"
+  # Out-of-fold predictions of the CV run; used by xg_prediction.plots. Set to null to skip.
+  oof_path: "data/processed/oof_predictions.csv"
+
+# Remote experiment tracking on DagsHub is opt-in (`tracking.remote=true`);
+# by default runs are logged to ./mlruns.
+tracking:
+  remote: false
 
 mode: tune
 

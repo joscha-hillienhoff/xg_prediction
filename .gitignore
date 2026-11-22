@@ -194,3 +194,6 @@ cython_debug/
 mlflow.db
 multirun/*
 outputs/*
+# Local MLflow tracking store
+mlruns/
+feature_columns.json
